@@ -29,6 +29,7 @@
         "@iplab/ngx-file-upload": "^17.0.0",
         "apexcharts": "^3.45.2",
         "express": "^4.18.2",
+        "keycloak-angular": "^15.2.1",
         "moment": "^2.30.1",
         "ng-apexcharts": "^1.8.0",
         "ngx-color-picker": "^16.0.0",
