@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { KeycloakService, KeycloakAuthGuard } from 'keycloak-angular';
-import { KeycloakAuthService } from '../../modules/auth/services/keycloak-auth.service';
+import { KeycloakAuthService } from '../../auth/services/keycloak-auth.service';
 import Swal from 'sweetalert2';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class AuthKeycloakGuard extends KeycloakAuthGuard {
   isAccessAllowed(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
     return new Promise(async (resolve, reject) => {
       if (!this.authenticated) {
-        this.router.navigate(['/admin']);
+        this.router.navigate(['/']);
         resolve(false);
         return;
       }

@@ -10,8 +10,9 @@
 >
     <div class="logo bg-white">
         <a routerLink="/" class="d-flex align-items-center">
-            <img src="assets/images/logo-icon.svg" alt="logo-icon">
-            <span class="fw-semibold">Daxa</span>
+            <!-- <img src="assets/images/logo-icon.svg" alt="logo-icon"> -->
+            <img src="assets/images/icons/logo-icon.png" alt="logo-icon">
+            <span class="fw-semibold">luae</span>
         </a>
     </div>
     <div
@@ -99,7 +100,7 @@
                         </mat-expansion-panel-header>
                         <ul class="sidebar-sub-menu">
                             <li class="sidemenu-item">
-                                <a routerLink="/modulo1" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                <a routerLink="/admin/modulo1" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     Componente 1
                                 </a>
                             </li>
@@ -119,10 +120,10 @@
                         </mat-expansion-panel-header>
                         <ul class="sidebar-sub-menu">
                             <li class="sidemenu-item">
-                                <a routerLink="/modulo2/componente-2" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                <a routerLink="/admin/modulo2/componente-2" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     Componente 2
                                 </a>
-                                <a routerLink="/modulo2/acerca-de" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
+                                <a routerLink="/admin/modulo2/acerca-de" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidemenu-link">
                                     Acerca de
                                 </a>
                             </li>
@@ -131,7 +132,7 @@
                     </mat-expansion-panel>
                     
            
-                    <a routerLink="/authentication/logout" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                    <a (click)="logout()" class="sidebar-menu-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                         <i class="material-symbols-outlined">
                             logout
                         </i>

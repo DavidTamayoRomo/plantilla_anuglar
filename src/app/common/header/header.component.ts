@@ -4,7 +4,8 @@ import { Component, HostListener } from '@angular/core';
 import { ToggleService } from '../sidebar/toggle.service';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CustomizerSettingsService } from '../../customizer-settings/customizer-settings.service';
+import { CustomizerSettingsService } from '../customizer-settings/customizer-settings.service';
+import { KeycloakAuthService } from '../../auth/services/keycloak-auth.service';
 
 @Component({
     selector: 'app-header',
@@ -21,9 +22,12 @@ export class HeaderComponent {
     // isToggled
     isToggled = false;
 
+    loggedUser = this.keycloakAuthService.getLoggedUser()?.['name'];
+
     constructor(
         private toggleService: ToggleService,
-        public themeService: CustomizerSettingsService
+        public themeService: CustomizerSettingsService,
+        private keycloakAuthService: KeycloakAuthService
     ) {
         this.toggleService.isSidebarToggled$.subscribe(isSidebarToggled => {
             this.isSidebarToggled = isSidebarToggled;
@@ -32,6 +36,8 @@ export class HeaderComponent {
             this.isToggled = isToggled;
         });
     }
+
+
 
     // Burger Menu Toggle
     toggle() {
@@ -85,4 +91,7 @@ export class HeaderComponent {
         this.themeService.toggleRTLEnabledTheme();
     }
 
+    logout() {
+        this.keycloakAuthService.logout(false);
+      }
 }

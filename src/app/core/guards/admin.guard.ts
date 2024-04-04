@@ -2,8 +2,8 @@ import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { KeycloakService } from "keycloak-angular";
-import { KeycloakAuthService } from "../../modules/auth/services/keycloak-auth.service";
 import { environment } from "../../../environments/environment.development";
+import { KeycloakAuthService } from "../../auth/services/keycloak-auth.service";
 
 
 export const adminGuard = async () => {
