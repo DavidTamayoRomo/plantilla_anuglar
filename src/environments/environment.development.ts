@@ -10,7 +10,7 @@ export const environment = {
     production: false,
     offline: false,
     multiTenant: true,
-    home_page: 'http://localhost:4200/',
+    home_page: 'http://localhost:4200/admin',
     keycloakConfig,
 
 

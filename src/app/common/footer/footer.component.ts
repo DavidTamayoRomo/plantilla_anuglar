@@ -13,7 +13,7 @@ export class FooterComponent {
 
     // isToggled
     isToggled = false;
-
+    date= new Date().getFullYear();
     constructor(
         public themeService: CustomizerSettingsService
     ) {

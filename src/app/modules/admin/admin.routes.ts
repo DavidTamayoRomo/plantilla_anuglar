@@ -13,13 +13,7 @@ export const ADMIN_ROUTES: Routes = [
     children: [
       {
         path: 'modulo1',
-        children: [
-          {
-            path: '',
-            component: Componente1Component,
-            canActivate: [AuthKeycloakGuard]
-          }
-        ]
+        component: Componente1Component
       },
       {
         path: 'modulo2',
