@@ -4,6 +4,8 @@ import { Componente1Component } from './modulo1/componente1/componente1.componen
 import { Componente2Component } from './modulo2/componente2/componente2.component';
 import { AcercaDeComponent } from './modulo2/acerca-de/acerca-de.component';
 import { AuthKeycloakGuard } from '../../core/guards/auth-keycloak.guard';
+import { ListaArticulosComponent } from './lista-articulos/lista-articulos.component';
+import { TreeComponent } from './utils/tree/tree.component';
 
 export const ADMIN_ROUTES: Routes = [
   {
@@ -33,6 +35,10 @@ export const ADMIN_ROUTES: Routes = [
           }
         ]
       },
+      {
+        path:'lista-articulos',
+        component:ListaArticulosComponent
+      }
       
     ]
   }

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListaArticulosComponent } from './lista-articulos.component';
+import { TreeComponent } from './tree.component';
 
-describe('ListaArticulosComponent', () => {
-  let component: ListaArticulosComponent;
-  let fixture: ComponentFixture<ListaArticulosComponent>;
+describe('TreeComponent', () => {
+  let component: TreeComponent;
+  let fixture: ComponentFixture<TreeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListaArticulosComponent]
+      imports: [TreeComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ListaArticulosComponent);
+    fixture = TestBed.createComponent(TreeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
