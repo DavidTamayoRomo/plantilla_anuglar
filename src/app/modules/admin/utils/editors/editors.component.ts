@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
 import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
@@ -25,8 +25,14 @@ export class EditorsComponent {
         ['align_left', 'align_center', 'align_right', 'align_justify'],
     ];
 
+    @Output() contentChanged = new EventEmitter<string>();
+
     ngOnInit(): void {
         this.editor = new Editor();
+
+        this.editor.valueChanges.subscribe((value: any) => {
+            this.contentChanged.emit(value);
+        });
     }
 
     // make sure to destory the editor

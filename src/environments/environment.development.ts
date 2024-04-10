@@ -13,6 +13,6 @@ export const environment = {
     home_page: 'http://localhost:4200/admin',
     keycloakConfig,
 
-
+    url_api: 'http://localhost:8080/api',
 
 };

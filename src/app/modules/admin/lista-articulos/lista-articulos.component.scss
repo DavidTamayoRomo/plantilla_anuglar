@@ -894,3 +894,30 @@
 .mat-form-field {
     margin-right: 4px;
 }
+
+
+::ng-deep {
+    .mat-mdc-card {
+        &.daxa-card {
+            &.file-card {
+                .mat-mdc-card-header {
+                    .mat-mdc-card-header-text {
+                        .mat-mdc-card-subtitle {
+                            .mat-mdc-button {
+                                &.card-header-menu-btn {
+                                    top: 20px;
+                                    right: 20px;
+                                    position: absolute;
+        
+                                    &::after {
+                                        display: none;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,13 +1,18 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatTreeNestedDataSource, MatTreeModule } from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CustomizerSettingsService } from '../../../../common/customizer-settings/customizer-settings.service';
 import { MatCardModule } from '@angular/material/card';
 import { BehaviorSubject } from 'rxjs';
-
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Validators } from 'ngx-editor';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { EditorsComponent } from '../editors/editors.component';
 /**
  * Food data with nested structure.
  * Each node has a name and an optional list of children.
@@ -72,7 +77,7 @@ const TREE_DATA: Node[] = [
 @Component({
     selector: 'app-tw-nested-nodes',
     standalone: true,
-    imports: [MatTreeModule, MatButtonModule, MatIconModule, FormsModule, MatCardModule],
+    imports: [MatTreeModule, MatButtonModule, MatIconModule, FormsModule, MatCardModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, EditorsComponent],
     templateUrl: './tw-nested-nodes.component.html',
     styleUrl: './tw-nested-nodes.component.scss'
 })
@@ -85,12 +90,27 @@ export class TwNestedNodesComponent {
     dataSource = new MatTreeNestedDataSource<Node>();
     searchText = '';
     originalData = TREE_DATA;
+
+    classApplied = false;
+    datoSeleccionado:any;
+    content:any;
+
+    form!: FormGroup;
+    private fb = inject(FormBuilder);
     constructor(
         public themeService: CustomizerSettingsService
     ) {
         this.dataSource.data = TREE_DATA;
         this.dataChange.next(TREE_DATA); // Inicializa el BehaviorSubject con los datos del árbol
         this.dataChange.subscribe(data => this.dataSource.data = data); // Suscríbete a los cambios y actualiza la fuente de datos
+    }
+
+    ngOnInit(): void {
+        this.form = this.fb.group({
+            titulo: [null, [Validators.required]],
+            contenido: [null, [Validators.required]],
+            estado: [null, [Validators.required]],
+        });
     }
 
     hasChild = (_: number, node: Node) => !!node.children && node.children.length > 0;
@@ -165,9 +185,9 @@ export class TwNestedNodesComponent {
     agregarHijo(node: Node) {
         // Añadir lógica para generar un nuevo nodo
         const nuevoHijo: Node = {
-            name: 'Articulo 4',
-            content: 'Informacion de capitulo 1',
-            state: 'Activo',
+            name: this.form.controls['titulo'].value,
+            content: this.content,
+            state: this.form.controls['estado'].value,
             children: [],
         };
         if (!node.children) {
@@ -178,6 +198,7 @@ export class TwNestedNodesComponent {
         this.actualizarDatos();
         // No modifiques directamente this.dataSource.data. En su lugar, emite un nuevo valor a través de dataChange
         this.dataChange.next(this.dataSource.data);
+        this.classApplied = !this.classApplied;
     }
 
     private actualizarDatos() {
@@ -186,5 +207,31 @@ export class TwNestedNodesComponent {
         this.dataSource.data = [];
         this.dataSource.data = data;
     }
+
+
+    /* abrirModalNuevo(node: Node) {
+
+    } */
+
+
+
+    abrirModalNuevo(node: Node) {
+        this.classApplied = !this.classApplied;
+        console.log(this.classApplied);
+        this.datoSeleccionado = node;
+    }
+
+    toggleClass() {
+        this.classApplied = !this.classApplied;
+    }
+
+    guardarNodo() {
+        this.agregarHijo(this.datoSeleccionado);
+    }
+
+    handleEditorContentChanged(content: string) {
+        this.content = content;
+    }
+
 
 }

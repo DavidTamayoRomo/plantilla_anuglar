@@ -25,7 +25,7 @@ import { Validators } from 'ngx-editor';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeModule, MatTreeNestedDataSource } from '@angular/material/tree';
 import { ArbolService } from '../services/arbol.service';
-import { TreeComponent } from '../utils/tree/tree.component';
+import { ArticuloService } from '../services/articulo.service';
 
 export interface PeriodicElement {
   taskName: string;
@@ -223,8 +223,7 @@ interface CategoriaNode {
   imports: [
     MatCardModule, MatMenuModule, MatButtonModule, RouterLink, MatTableModule, NgIf, MatCheckboxModule,
     MatTooltipModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatPaginatorModule,
-    RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule,
-    TreeComponent
+    RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule
   ],
   templateUrl: './lista-articulos.component.html',
   styleUrl: './lista-articulos.component.scss'
@@ -234,8 +233,8 @@ export class ListaArticulosComponent {
   private fb = inject(FormBuilder);
 
   displayedColumns: string[] = ['titulo', 'contenido', 'codigo', 'action'];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
-  selection = new SelectionModel<PeriodicElement>(true, []);
+  dataSource = new MatTableDataSource<Node>();
+  selection = new SelectionModel<Node>(true, []);
 
   treeControl = new NestedTreeControl<CategoriaNode>((node) => node.children);
   dataSource1 = new MatTreeNestedDataSource<CategoriaNode>();
@@ -245,7 +244,7 @@ export class ListaArticulosComponent {
   // isToggled
   isToggled = false;
 
-  form!: FormGroup;
+  //form!: FormGroup;
 
   // Popup Trigger
   classApplied = false;
@@ -266,7 +265,8 @@ export class ListaArticulosComponent {
 
   constructor(
     public themeService: CustomizerSettingsService,
-    public arbolService: ArbolService
+    public arbolService: ArbolService,
+    public articuloService: ArticuloService
   ) {
     this.themeService.isToggled$.subscribe(isToggled => {
       this.isToggled = isToggled;
@@ -276,11 +276,20 @@ export class ListaArticulosComponent {
 
 
   ngOnInit(): void {
-    this.form = this.fb.group({
+    /* this.form = this.fb.group({
       titulo: [null, [Validators.required]],
       contenido: [null, [Validators.required]],
       estado: [null, [Validators.required]],
-    });
+    }); */
+    //this.dataSource.data
+    this.articuloService.getArticulos(0, 10).subscribe({
+      next: (data:any) => {
+        console.log(data);
+        this.dataSource.data = data.content;
+      },
+      error: (err) => { console.log("Error al cargar los Artículos") }
+    }
+    );
 
     this.dataSource1.data = [
       {
@@ -306,8 +315,8 @@ export class ListaArticulosComponent {
 
 
   guardar() {
-    console.log(this.form.value);
-    console.log(this.form);
+    /* console.log(this.form.value);
+    console.log(this.form); */
   }
 
 
