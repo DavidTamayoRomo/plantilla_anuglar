@@ -3,12 +3,19 @@
     [ngClass]="{'active': isSidebarToggled, 'sticky': isSticky}"
     [class.component-dark-theme]="themeService.isDark()"
     [class.right-sidebar]="themeService.isRightSidebar()"
-    [class.hide-sidebar]="themeService.isHideSidebar()"
+    [class.hide-sidebar]="true"
     [class.dark-header]="themeService.isHeaderDark()"
     [class.card-borderd-theme]="themeService.isCardBorder()"
     [class.rtl-enabled]="themeService.isRTLEnabled()"
 >
+
     <div class="d-md-flex align-items-center justify-content-between">
+        <a class="d-flex align-items-center">
+            <!-- <img src="assets/images/logo-icon.svg" alt="logo-icon"> -->
+            <img src="assets/images/icons/logo-icon.png" alt="logo-icon" width="50px"/>
+            <span class="fw-semibold">Codigo Municipal</span>
+        </a>
+
         <div class="header-left-side d-flex align-items-center">
             <div
                 class="burger-menu cursor-pointer transition d-xl-none"

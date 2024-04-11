@@ -35,13 +35,13 @@
                         </i>
                     </button>
                     <mat-menu #cardHeaderMenu="matMenu" class="card-header-menu" xPosition="before">
-                        <button mat-menu-item>
+                        <button mat-menu-item (click)="exportToPDF()">
                             PDF
                         </button>
-                        <button mat-menu-item>
+                        <button mat-menu-item (click)="exportToCSV()">
                             CSV
                         </button>
-                        <button mat-menu-item>
+                        <button mat-menu-item (click)="exportToDocx()">
                             DOC
                         </button>
                     </mat-menu>
