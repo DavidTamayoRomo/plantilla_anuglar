@@ -1,4 +1,4 @@
-import { NgClass } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { Component, HostListener } from '@angular/core';
 import { ToggleService } from '../sidebar/toggle.service';
@@ -10,7 +10,7 @@ import { KeycloakAuthService } from '../../auth/services/keycloak-auth.service';
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [NgClass, MatMenuModule, MatButtonModule, RouterLink, RouterLinkActive],
+    imports: [NgClass, MatMenuModule, MatButtonModule, RouterLink, RouterLinkActive, CommonModule],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss'
 })
@@ -24,6 +24,9 @@ export class HeaderComponent {
 
     loggedUser = this.keycloakAuthService.getLoggedUser()?.['name'];
 
+    mostrarLogin:boolean=false;
+    mostrarLogout:boolean=false;
+
     constructor(
         private toggleService: ToggleService,
         public themeService: CustomizerSettingsService,
@@ -35,6 +38,19 @@ export class HeaderComponent {
         this.themeService.isToggled$.subscribe(isToggled => {
             this.isToggled = isToggled;
         });
+    }
+
+    ngOnInit(){
+        console.log(this.keycloakAuthService.getRoles());
+        if(this.keycloakAuthService.getRoles().length > 0){
+            console.log("entre 1");
+            this.mostrarLogout=true;
+            this.mostrarLogin=false
+        }else{
+            console.log("entre 2");
+            this.mostrarLogin=true
+            this.mostrarLogout=false
+        }
     }
 
 
@@ -92,6 +108,6 @@ export class HeaderComponent {
     }
 
     logout() {
-        this.keycloakAuthService.logout(false);
+        this.keycloakAuthService.logout(true);
       }
 }

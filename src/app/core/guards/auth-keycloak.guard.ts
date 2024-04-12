@@ -26,6 +26,7 @@ export class AuthKeycloakGuard extends KeycloakAuthGuard {
       }
       this.roles = this.keycloakAuthService.getRoles();
       if (this.roles.length > 0) {
+        console.log(this.roles);
         const requiredRoles: string[] = route.data['roles'];
         let granted: boolean = false;
         if (!requiredRoles || requiredRoles.length === 0) {

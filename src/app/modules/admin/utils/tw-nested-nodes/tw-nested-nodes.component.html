@@ -29,7 +29,7 @@
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle class="node-name" (click)="logNodeData(node)"
                 [class.highlighted]="node.isVisible">
                 {{node.name}}
-                 <span class="material-symbols-outlined" (click)="abrirModalNuevo(node)">add</span>
+                 <span class="material-symbols-outlined" (click)="abrirModalNuevo(node)" *hasRole="['Super Administrador']">add</span>
             </mat-tree-node>
             <!-- This is the tree node template for expandable nodes -->
             <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
@@ -42,7 +42,7 @@
                     <span (click)="logNodeData(node)" class="node-name"
                         [class.highlighted]="node.isVisible">{{node.name}}</span>
                     <!-- Botón para agregar un nuevo hijo al nodo actual -->
-                    <span class="material-symbols-outlined" (click)="abrirModalNuevo(node)">add</span>
+                    <span class="material-symbols-outlined" (click)="abrirModalNuevo(node)" *hasRole="['Super Administrador']">add</span>
                 </div>
                 <!-- There is inline padding applied to this div using styles.
             This padding value depends on the mat-icon-button width.  -->

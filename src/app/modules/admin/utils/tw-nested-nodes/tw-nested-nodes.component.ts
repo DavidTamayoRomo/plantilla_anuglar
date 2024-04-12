@@ -13,6 +13,7 @@ import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { EditorsComponent } from '../editors/editors.component';
+import { HasRoleDirective } from '../../../../directives/has-role.directive';
 /**
  * Food data with nested structure.
  * Each node has a name and an optional list of children.
@@ -77,7 +78,7 @@ const TREE_DATA: Node[] = [
 @Component({
     selector: 'app-tw-nested-nodes',
     standalone: true,
-    imports: [MatTreeModule, MatButtonModule, MatIconModule, FormsModule, MatCardModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, EditorsComponent],
+    imports: [MatTreeModule, MatButtonModule, MatIconModule, FormsModule, MatCardModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, EditorsComponent, HasRoleDirective],
     templateUrl: './tw-nested-nodes.component.html',
     styleUrl: './tw-nested-nodes.component.scss'
 })

@@ -28,7 +28,7 @@ export class KeycloakAuthService {
   }
   logout(redirect: boolean) {
     if (redirect) {
-      this.keycloakService.logout(this.keycloakLoginOptions.redirectUri);
+      this.keycloakService.logout(environment.home);
     } else {
       this.keycloakService.logout();
     }
@@ -41,10 +41,13 @@ export class KeycloakAuthService {
     this.keycloakService.getKeycloakInstance().accountManagement();
   }
   getRoles() {
-    let roles = this.keycloakService.getKeycloakInstance().resourceAccess
-    if (roles![environment.keycloakConfig.clientId]) {
-      return roles![environment.keycloakConfig.clientId].roles;
+    let roles:any = this.keycloakService.getKeycloakInstance().resourceAccess;
+    if (roles!=undefined) {
+      if (roles![environment.keycloakConfig.clientId]) {
+        return roles![environment.keycloakConfig.clientId].roles;
+      }
     }
+    
     return []
   }
 

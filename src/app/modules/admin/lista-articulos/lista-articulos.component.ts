@@ -31,6 +31,8 @@ import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Document, Packer, Paragraph, TextRun } from "docx";
+import { HasRoleDirective } from '../../../directives/has-role.directive';
+import { KeycloakAuthService } from '../../../auth/services/keycloak-auth.service';
 
 export interface PeriodicElement {
   taskName: string;
@@ -228,16 +230,17 @@ interface CategoriaNode {
   imports: [
     MatCardModule, MatMenuModule, MatButtonModule, RouterLink, MatTableModule, NgIf, MatCheckboxModule,
     MatTooltipModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatPaginatorModule,
-    RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule
+    RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule, HasRoleDirective
   ],
   templateUrl: './lista-articulos.component.html',
-  styleUrl: './lista-articulos.component.scss'
+  styleUrl: './lista-articulos.component.scss',
 })
 export class ListaArticulosComponent {
 
   private fb = inject(FormBuilder);
 
-  displayedColumns: string[] = ['titulo', 'contenido', 'codigo', 'action'];
+  
+  displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<Node>();
   selection = new SelectionModel<Node>(true, []);
 
@@ -271,7 +274,8 @@ export class ListaArticulosComponent {
   constructor(
     public themeService: CustomizerSettingsService,
     public arbolService: ArbolService,
-    public articuloService: ArticuloService
+    public articuloService: ArticuloService,
+    private keycloakauthService:KeycloakAuthService
   ) {
     this.themeService.isToggled$.subscribe(isToggled => {
       this.isToggled = isToggled;
@@ -281,12 +285,17 @@ export class ListaArticulosComponent {
 
 
   ngOnInit(): void {
-    /* this.form = this.fb.group({
-      titulo: [null, [Validators.required]],
-      contenido: [null, [Validators.required]],
-      estado: [null, [Validators.required]],
-    }); */
-    //this.dataSource.data
+    console.log(this.keycloakauthService.getRoles());
+    if (this.keycloakauthService.getRoles()) {
+      if(this.keycloakauthService.getRoles().includes('Super Administrador')){
+        this.displayedColumns= ['titulo', 'contenido', 'codigo', 'action'];
+      }else{
+        this.displayedColumns= ['titulo', 'contenido', 'codigo'];
+      }
+    }else{
+      this.displayedColumns= ['titulo', 'contenido', 'codigo'];
+    }
+    
     this.articuloService.getArticulos(0, 10).subscribe({
       next: (data: any) => {
         console.log(data);
