@@ -239,7 +239,7 @@ export class ListaArticulosComponent {
 
   private fb = inject(FormBuilder);
 
-  
+
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<Node>();
   selection = new SelectionModel<Node>(true, []);
@@ -256,6 +256,10 @@ export class ListaArticulosComponent {
 
   // Popup Trigger
   classApplied = false;
+
+
+  contenidoSeleccionado:Node;
+
   toggleClass() {
     this.classApplied = !this.classApplied;
   }
@@ -275,7 +279,7 @@ export class ListaArticulosComponent {
     public themeService: CustomizerSettingsService,
     public arbolService: ArbolService,
     public articuloService: ArticuloService,
-    private keycloakauthService:KeycloakAuthService
+    private keycloakauthService: KeycloakAuthService
   ) {
     this.themeService.isToggled$.subscribe(isToggled => {
       this.isToggled = isToggled;
@@ -287,15 +291,15 @@ export class ListaArticulosComponent {
   ngOnInit(): void {
     console.log(this.keycloakauthService.getRoles());
     if (this.keycloakauthService.getRoles()) {
-      if(this.keycloakauthService.getRoles().includes('Super Administrador')){
-        this.displayedColumns= ['titulo', 'contenido', 'codigo', 'action'];
-      }else{
-        this.displayedColumns= ['titulo', 'contenido', 'codigo'];
+      if (this.keycloakauthService.getRoles().includes('Super Administrador')) {
+        this.displayedColumns = ['titulo', 'contenido', 'estado', 'action'];
+      } else {
+        this.displayedColumns = ['titulo', 'contenido', 'estado'];
       }
-    }else{
-      this.displayedColumns= ['titulo', 'contenido', 'codigo'];
+    } else {
+      this.displayedColumns = ['titulo', 'contenido', 'estado'];
     }
-    
+
     this.articuloService.getArticulos(0, 10).subscribe({
       next: (data: any) => {
         console.log(data);
@@ -1569,8 +1573,8 @@ export class ListaArticulosComponent {
         {
           children: jsonData.content?.content?.map((para) => { // Asegurar que jsonData.content.content es un arreglo
             const paragraphChildren = para.content?.map((content) => { // Similarmente para para.content
-              let style:any = {};
-  
+              let style: any = {};
+
               if (content.marks) {
                 content.marks.forEach((mark) => {
                   if (mark.type === "strong") {
@@ -1579,16 +1583,16 @@ export class ListaArticulosComponent {
                   // Incluye aquí más lógica de estilos según necesites
                 });
               }
-  
+
               return new TextRun({
                 text: content.text,
                 ...style,
               });
             }) || []; // Fallback a arreglo vacío si para.content es undefined
-  
-            let alignment:any = "left"; // Valor predeterminado
+
+            let alignment: any = "left"; // Valor predeterminado
             // Establece la alineación basada en para.attrs.align, si existe
-  
+
             return new Paragraph({
               children: paragraphChildren,
               alignment: alignment,
@@ -1604,5 +1608,10 @@ export class ListaArticulosComponent {
     });
   }
 
+
+  openModal(element:Node) {
+    this.classApplied = !this.classApplied;
+    this.contenidoSeleccionado = element;
+  }
 
 }

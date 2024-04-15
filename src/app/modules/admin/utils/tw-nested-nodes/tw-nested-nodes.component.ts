@@ -14,10 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { EditorsComponent } from '../editors/editors.component';
 import { HasRoleDirective } from '../../../../directives/has-role.directive';
-/**
- * Food data with nested structure.
- * Each node has a name and an optional list of children.
- */
+import { ArticuloService } from '../../services/articulo.service';
+
 interface Node {
     id?: string;
     name: string;
@@ -28,52 +26,7 @@ interface Node {
     isExpanded?: boolean;
 }
 
-const TREE_DATA: Node[] = [
-    {
-        name: 'CAPITULO I',
-        content: 'Informacion de capitulo 1',
-        state: 'Activo',
-        children: [{ name: 'Articulo 1' }, { name: 'Articulo 2' }, { name: 'Articulo 3' }],
-    },
-    {
-        name: 'CAPITULO II',
-        content: 'Informacion de capitulo 2',
-        children: [
-            {
-                name: 'Articulo 5',
-                children: [{ name: 'Articulo 5.1' }, { name: 'Articulo 5.2' }],
-            },
-            {
-                name: 'Articulo 6',
-                children: [
-                    {
-                        name: 'Articulo 6.1',
-                        children: [
-                            { name: 'Parrafo 1' },
-                            { name: 'Parrafo 2' },
-                            { name: 'Parrafo 3' },
-                            { name: 'Parrafo 4' },
-                        ]
-                    },
-                    {
-                        name: 'Articulo 6.2',
-                        children: [
-                            { name: 'Parrafo 1' },
-                            { name: 'Parrafo 2' },
-                            { name: 'Parrafo 3' },
-                            { name: 'Parrafo 4' },
-                            { name: 'Parrafo 5' },
-                            { name: 'Parrafo 6' },
-                            { name: 'Parrafo 7' },
-                        ]
-                    },
-                    { name: 'Articulo 6.3' },
-                    { name: 'Articulo 6.4' },
-                ],
-            },
-        ],
-    },
-];
+
 
 @Component({
     selector: 'app-tw-nested-nodes',
@@ -90,20 +43,18 @@ export class TwNestedNodesComponent {
     treeControl = new NestedTreeControl<Node>(node => node.children);
     dataSource = new MatTreeNestedDataSource<Node>();
     searchText = '';
-    originalData = TREE_DATA;
 
     classApplied = false;
-    datoSeleccionado:any;
-    content:any;
+    datoSeleccionado: any;
+    content: any;
 
     form!: FormGroup;
     private fb = inject(FormBuilder);
     constructor(
-        public themeService: CustomizerSettingsService
+        public themeService: CustomizerSettingsService,
+        public articuloService: ArticuloService
     ) {
-        this.dataSource.data = TREE_DATA;
-        this.dataChange.next(TREE_DATA); // Inicializa el BehaviorSubject con los datos del árbol
-        this.dataChange.subscribe(data => this.dataSource.data = data); // Suscríbete a los cambios y actualiza la fuente de datos
+
     }
 
     ngOnInit(): void {
@@ -112,6 +63,17 @@ export class TwNestedNodesComponent {
             contenido: [null, [Validators.required]],
             estado: [null, [Validators.required]],
         });
+        this.articuloService.getArticulos(0, 10).subscribe({
+            next: (data: any) => {
+                console.log(data);
+                this.dataSource.data = data.content;
+                this.dataChange.next(data.content); // Inicializa el BehaviorSubject con los datos del árbol
+                this.dataChange.subscribe(data => this.dataSource.data = data); // Suscríbete a los cambios y actualiza la fuente de datos
+                this.resetTree();
+            },
+            error: (err) => { console.log("Error al cargar los Artículos") }
+        })
+
     }
 
     hasChild = (_: number, node: Node) => !!node.children && node.children.length > 0;
@@ -129,7 +91,7 @@ export class TwNestedNodesComponent {
             this.dataSource.data.forEach(node => {
                 this.filterNodes(node, searchText);
             });
-            this.expandNodes(); // Nueva función para expandir solo los nodos necesarios
+            this.expandNodes(); // Función para expandir solo los nodos necesarios
         } else {
             this.treeControl.collapseAll(); // Colapsa todo si no hay texto de búsqueda
         }
