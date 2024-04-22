@@ -1621,6 +1621,7 @@ export class ListaArticulosComponent {
   handleVisibleNodes(visibleNodes: Node[]) {
     console.log("Recibido:", visibleNodes);
     this.dataSource.data = this.buildCompleteList(visibleNodes);
+    console.log("Transforamdo:; ", this.buildCompleteList(visibleNodes));
   }
 
   buildCompleteTree(nodes: Node[]): Node[] {
@@ -1639,9 +1640,13 @@ export class ListaArticulosComponent {
 
     const traverseTree = (nodes: Node[]) => {
       nodes.forEach((node) => {
-        completeList.push(node); // Agrega el nodo a la lista
-        if (node.children && node.children.length > 0) {
-          traverseTree(node.children); // Recorre recursivamente los hijos
+        if (!completeList.includes(node)) { // Evitar duplicaciones
+          completeList.push(node); // Agrega el nodo a la lista
+          if (node.children && node.children.length > 0) {
+            traverseTree(node.children); // Recorre recursivamente los hijos
+          }
+        } else {
+          console.warn("Nodo duplicado omitido:", node); // Avisar sobre posibles duplicaciones
         }
       });
     };
