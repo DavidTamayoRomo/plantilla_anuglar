@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,10 +18,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { EditorsComponent } from '../utils/editors/editors.component';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { TwNestedNodesComponent } from '../utils/tw-nested-nodes/tw-nested-nodes.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Validators } from 'ngx-editor';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { MatTreeModule, MatTreeNestedDataSource } from '@angular/material/tree';
 import { ArbolService } from '../services/arbol.service';
@@ -230,7 +229,7 @@ interface CategoriaNode {
   imports: [
     MatCardModule, MatMenuModule, MatButtonModule, RouterLink, MatTableModule, NgIf, MatCheckboxModule,
     MatTooltipModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatPaginatorModule,
-    RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule, HasRoleDirective
+    RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule, HasRoleDirective, RouterModule
   ],
   templateUrl: './lista-articulos.component.html',
   styleUrl: './lista-articulos.component.scss',
@@ -258,7 +257,7 @@ export class ListaArticulosComponent {
   classApplied = false;
 
 
-  contenidoSeleccionado:Node;
+  contenidoSeleccionado: Node;
 
   toggleClass() {
     this.classApplied = !this.classApplied;
@@ -279,7 +278,8 @@ export class ListaArticulosComponent {
     public themeService: CustomizerSettingsService,
     public arbolService: ArbolService,
     public articuloService: ArticuloService,
-    private keycloakauthService: KeycloakAuthService
+    private keycloakauthService: KeycloakAuthService,
+    private router: Router
   ) {
     this.themeService.isToggled$.subscribe(isToggled => {
       this.isToggled = isToggled;
@@ -292,14 +292,14 @@ export class ListaArticulosComponent {
     console.log(this.keycloakauthService.getRoles());
     if (this.keycloakauthService.getRoles()) {
       if (this.keycloakauthService.getRoles().includes('Super Administrador')) {
-        this.displayedColumns = ['titulo', 'contenido', 'estado', 'action'];
+        this.displayedColumns = ['contenido', 'estado', 'action'];
       } else {
-        this.displayedColumns = ['titulo', 'contenido', 'estado'];
+        this.displayedColumns = ['contenido'];
       }
     } else {
       this.displayedColumns = ['titulo', 'contenido', 'estado'];
     }
-
+    /*  this.displayedColumns = ['titulo', 'contenido', 'estado', 'action']; */
     this.articuloService.getArticulos(0, 10).subscribe({
       next: (data: any) => {
         console.log(data);
@@ -1609,9 +1609,18 @@ export class ListaArticulosComponent {
   }
 
 
-  openModal(element:Node) {
+  openModal(element: Node) {
     this.classApplied = !this.classApplied;
     this.contenidoSeleccionado = element;
+  }
+
+  abrirHistorial() {
+    this.router.navigate(['/admin/contenido'])
+  }
+
+  handleVisibleNodes(visibleNodes: Node[]) {
+    console.log("Recibido:", visibleNodes);
+    this.dataSource.data = visibleNodes;
   }
 
 }

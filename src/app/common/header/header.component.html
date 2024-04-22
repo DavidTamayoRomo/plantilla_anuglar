@@ -3,7 +3,7 @@
     [ngClass]="{'active': isSidebarToggled, 'sticky': isSticky}"
     [class.component-dark-theme]="themeService.isDark()"
     [class.right-sidebar]="themeService.isRightSidebar()"
-    [class.hide-sidebar]="true"
+    [class.hide-sidebar]="themeService.isHideSidebar()"
     [class.dark-header]="themeService.isHeaderDark()"
     [class.card-borderd-theme]="themeService.isCardBorder()"
     [class.rtl-enabled]="themeService.isRTLEnabled()"

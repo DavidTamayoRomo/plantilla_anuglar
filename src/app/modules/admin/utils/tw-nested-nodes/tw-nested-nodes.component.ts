@@ -1,5 +1,5 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { MatTreeNestedDataSource, MatTreeModule } from '@angular/material/tree';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,6 +36,7 @@ interface Node {
     styleUrl: './tw-nested-nodes.component.scss'
 })
 export class TwNestedNodesComponent {
+    @Output() NodoSeleccionado = new EventEmitter<Node[]>();
 
     // Añade un BehaviorSubject para manejar los datos del árbol
     private dataChange = new BehaviorSubject<Node[]>([]);
@@ -63,6 +64,11 @@ export class TwNestedNodesComponent {
             contenido: [null, [Validators.required]],
             estado: [null, [Validators.required]],
         });
+        this.obtenerTodos();
+
+    }
+
+    obtenerTodos(){
         this.articuloService.getArticulos(0, 10).subscribe({
             next: (data: any) => {
                 console.log(data);
@@ -73,7 +79,6 @@ export class TwNestedNodesComponent {
             },
             error: (err) => { console.log("Error al cargar los Artículos") }
         })
-
     }
 
     hasChild = (_: number, node: Node) => !!node.children && node.children.length > 0;
@@ -81,6 +86,7 @@ export class TwNestedNodesComponent {
 
     logNodeData(node: any) {
         console.log(node);
+        this.NodoSeleccionado.emit([node]);
     }
 
     search() {
@@ -92,7 +98,21 @@ export class TwNestedNodesComponent {
                 this.filterNodes(node, searchText);
             });
             this.expandNodes(); // Función para expandir solo los nodos necesarios
+            const visibleNodes = this.getVisibleNodes(this.dataSource.data);
+            console.log("Nodos visibles tras la búsqueda:", visibleNodes); // Imprimir los nodos visibles
+            //Enviar al componente los visibles
+            this.NodoSeleccionado.emit(visibleNodes); 
         } else {
+            this.articuloService.getArticulos(0, 10).subscribe({
+                next: (data: any) => {
+                    this.dataSource.data = data.content;
+                    this.dataChange.next(data.content); // Inicializa el BehaviorSubject con los datos del árbol
+                    this.dataChange.subscribe(data => this.dataSource.data = data); // Suscríbete a los cambios y actualiza la fuente de datos
+                    this.resetTree();
+                    this.NodoSeleccionado.emit(data.content);
+                },
+                error: (err) => { console.log("Error al cargar los Artículos") }
+            })
             this.treeControl.collapseAll(); // Colapsa todo si no hay texto de búsqueda
         }
     }
@@ -196,5 +216,24 @@ export class TwNestedNodesComponent {
         this.content = content;
     }
 
+
+    getVisibleNodes(nodes: Node[]): Node[] {
+        const visibleNodes: Node[] = [];
+    
+        const traverseNodes = (nodes: Node[]) => {
+            nodes.forEach(node => {
+                if (node.isVisible) {
+                    visibleNodes.push(node);
+                }
+                if (node.children) {
+                    traverseNodes(node.children);
+                }
+            });
+        };
+    
+        traverseNodes(nodes);
+    
+        return visibleNodes;
+    }
 
 }

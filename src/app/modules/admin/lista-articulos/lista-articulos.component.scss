@@ -23,6 +23,11 @@
                         }
 
                         .mat-mdc-cell {
+                            text-align: center;
+                            /* Centración horizontal */
+                            vertical-align: middle;
+
+                            /* Centración vertical */
                             padding: {
                                 top: 21.5px;
                                 bottom: 21.5px;
@@ -109,6 +114,11 @@
                             }
 
                             .mat-mdc-cell {
+                                text-align: center;
+                                /* Centración horizontal */
+                                vertical-align: middle;
+
+                                /* Centración vertical */
                                 &:last-child {
                                     text-align: left;
                                 }
@@ -315,6 +325,11 @@
                                 }
 
                                 .mat-mdc-cell {
+                                    text-align: center;
+                                    /* Centración horizontal */
+                                    vertical-align: middle;
+
+                                    /* Centración vertical */
                                     &:first-child {
                                         padding: {
                                             right: 15px;
@@ -432,6 +447,11 @@
                                 }
 
                                 .mat-mdc-cell {
+                                    text-align: center;
+                                    /* Centración horizontal */
+                                    vertical-align: middle;
+
+                                    /* Centración vertical */
                                     &:first-child {
                                         padding: {
                                             right: 20px;
@@ -908,7 +928,7 @@
                                     top: 20px;
                                     right: 20px;
                                     position: absolute;
-        
+
                                     &::after {
                                         display: none;
                                     }
