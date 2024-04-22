@@ -241,9 +241,11 @@ export class ListaArticulosComponent {
 
   displayedColumns: string[] = [];
   dataSource = new MatTableDataSource<Node>();
+  dataSourceTree = new MatTreeNestedDataSource<Node>();
   selection = new SelectionModel<Node>(true, []);
 
-  treeControl = new NestedTreeControl<CategoriaNode>((node) => node.children);
+  treeControl = new NestedTreeControl<Node>((node) => node.children);
+
   dataSource1 = new MatTreeNestedDataSource<CategoriaNode>();
   addNodeForm: FormGroup;
 
@@ -289,7 +291,6 @@ export class ListaArticulosComponent {
 
 
   ngOnInit(): void {
-    console.log(this.keycloakauthService.getRoles());
     if (this.keycloakauthService.getRoles()) {
       if (this.keycloakauthService.getRoles().includes('Super Administrador')) {
         this.displayedColumns = ['contenido', 'estado', 'action'];
@@ -303,11 +304,10 @@ export class ListaArticulosComponent {
     this.articuloService.getArticulos(0, 10).subscribe({
       next: (data: any) => {
         console.log(data);
-        this.dataSource.data = data.content;
+        this.dataSource.data = this.buildCompleteList(data.content);
       },
       error: (err) => { console.log("Error al cargar los Artículos") }
-    }
-    );
+    });
 
     this.dataSource1.data = [
       {
@@ -338,7 +338,7 @@ export class ListaArticulosComponent {
   }
 
 
-  hasChild = (_: number, node: CategoriaNode) =>
+  hasChild = (_: number, node: Node) =>
     !!node.children && node.children.length > 0;
 
 
@@ -1620,7 +1620,35 @@ export class ListaArticulosComponent {
 
   handleVisibleNodes(visibleNodes: Node[]) {
     console.log("Recibido:", visibleNodes);
-    this.dataSource.data = visibleNodes;
+    this.dataSource.data = this.buildCompleteList(visibleNodes);
+  }
+
+  buildCompleteTree(nodes: Node[]): Node[] {
+    // Si hay nodos hijos, construye el árbol recursivamente
+    return nodes.map((node) => {
+      if (node.children && node.children.length > 0) {
+        console.log("TEngo hijos", node.children);
+        node.children = this.buildCompleteTree(node.children); // Recurre en los nodos hijos
+      }
+      return node; // Devuelve el nodo, asegurando que los hijos estén correctamente construidos
+    });
+  }
+
+  buildCompleteList(nodes: Node[]): Node[] {
+    const completeList: Node[] = [];
+
+    const traverseTree = (nodes: Node[]) => {
+      nodes.forEach((node) => {
+        completeList.push(node); // Agrega el nodo a la lista
+        if (node.children && node.children.length > 0) {
+          traverseTree(node.children); // Recorre recursivamente los hijos
+        }
+      });
+    };
+
+    traverseTree(nodes); // Inicia el recorrido
+
+    return completeList; // Devuelve la lista completa con todos los nodos
   }
 
 }
