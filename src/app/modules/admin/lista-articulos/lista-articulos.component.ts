@@ -32,6 +32,7 @@ import html2canvas from 'html2canvas';
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import { HasRoleDirective } from '../../../directives/has-role.directive';
 import { KeycloakAuthService } from '../../../auth/services/keycloak-auth.service';
+import { TextFromObjectPipe } from "../../../text-from-object.pipe";
 
 export interface PeriodicElement {
   taskName: string;
@@ -213,6 +214,7 @@ interface Node {
   name: string;
   content?: string;
   state?: string;
+  referencia?: string;
   children?: Node[];
   isVisible?: boolean;
   isExpanded?: boolean;
@@ -224,15 +226,16 @@ interface CategoriaNode {
 }
 
 @Component({
-  selector: 'app-lista-articulos',
-  standalone: true,
-  imports: [
-    MatCardModule, MatMenuModule, MatButtonModule, RouterLink, MatTableModule, NgIf, MatCheckboxModule,
-    MatTooltipModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatPaginatorModule,
-    RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule, HasRoleDirective, RouterModule
-  ],
-  templateUrl: './lista-articulos.component.html',
-  styleUrl: './lista-articulos.component.scss',
+    selector: 'app-lista-articulos',
+    standalone: true,
+    templateUrl: './lista-articulos.component.html',
+    styleUrl: './lista-articulos.component.scss',
+    imports: [
+        MatCardModule, MatMenuModule, MatButtonModule, RouterLink, MatTableModule, NgIf, MatCheckboxModule,
+        MatTooltipModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatPaginatorModule,
+        RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule, HasRoleDirective, RouterModule,
+        TextFromObjectPipe
+    ]
 })
 export class ListaArticulosComponent {
 
@@ -301,10 +304,10 @@ export class ListaArticulosComponent {
       this.displayedColumns = ['titulo', 'contenido', 'estado'];
     }
     /*  this.displayedColumns = ['titulo', 'contenido', 'estado', 'action']; */
-    this.articuloService.getArticulos(0, 10).subscribe({
+    this.articuloService.getArticulos().subscribe({
       next: (data: any) => {
         console.log(data);
-        this.dataSource.data = this.buildCompleteList(data.content);
+        this.dataSource.data = this.buildCompleteList(data);
       },
       error: (err) => { console.log("Error al cargar los Artículos") }
     });
@@ -445,7 +448,8 @@ export class ListaArticulosComponent {
   }
 
   exportToPDF() {
-    let jsonData = {
+    let jsonData = 
+    {
       "name": "segmento",
       "content": {
         "type": "doc",
@@ -1656,4 +1660,5 @@ export class ListaArticulosComponent {
     return completeList; // Devuelve la lista completa con todos los nodos
   }
 
+  
 }

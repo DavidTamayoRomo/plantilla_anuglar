@@ -14,8 +14,8 @@ export class ArticuloService {
   ) { }
 
 
-  getArticulos(page:Number, size: Number) {
-    return this.http.get(`${base_url}/articulos?page=${page}&size=${size}`);
+  getArticulos() {
+    return this.http.get(`${base_url}/articulos`);
   }
 
 }

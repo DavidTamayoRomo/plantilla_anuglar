@@ -21,6 +21,8 @@ interface Node {
     name: string;
     content?: string;
     state?: string;
+    referencia?: string;
+    id_padre?: string;
     children?: Node[];
     isVisible?: boolean;
     isExpanded?: boolean;
@@ -69,11 +71,11 @@ export class TwNestedNodesComponent {
     }
 
     obtenerTodos(){
-        this.articuloService.getArticulos(0, 10).subscribe({
+        this.articuloService.getArticulos().subscribe({
             next: (data: any) => {
                 console.log(data);
-                this.dataSource.data = data.content;
-                this.dataChange.next(data.content); // Inicializa el BehaviorSubject con los datos del árbol
+                this.dataSource.data = data;
+                this.dataChange.next(data); // Inicializa el BehaviorSubject con los datos del árbol
                 this.dataChange.subscribe(data => this.dataSource.data = data); // Suscríbete a los cambios y actualiza la fuente de datos
                 this.resetTree();
             },
@@ -103,7 +105,7 @@ export class TwNestedNodesComponent {
             //Enviar al componente los visibles
             this.NodoSeleccionado.emit(visibleNodes); 
         } else {
-            this.articuloService.getArticulos(0, 10).subscribe({
+            this.articuloService.getArticulos().subscribe({
                 next: (data: any) => {
                     this.dataSource.data = data.content;
                     this.dataChange.next(data.content); // Inicializa el BehaviorSubject con los datos del árbol
