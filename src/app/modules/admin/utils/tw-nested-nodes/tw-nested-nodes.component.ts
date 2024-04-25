@@ -49,7 +49,10 @@ export class TwNestedNodesComponent {
 
     classApplied = false;
     datoSeleccionado: any;
+    datoSeleccionadoGuardar: any;
     content: any;
+
+    banderaPadre = false;
 
     form!: FormGroup;
     private fb = inject(FormBuilder);
@@ -65,6 +68,7 @@ export class TwNestedNodesComponent {
             titulo: [null, [Validators.required]],
             contenido: [null, [Validators.required]],
             estado: [null, [Validators.required]],
+            referencia: [null],
         });
         this.obtenerTodos();
 
@@ -107,11 +111,11 @@ export class TwNestedNodesComponent {
         } else {
             this.articuloService.getArticulos().subscribe({
                 next: (data: any) => {
-                    this.dataSource.data = data.content;
-                    this.dataChange.next(data.content); // Inicializa el BehaviorSubject con los datos del árbol
+                    this.dataSource.data = data;
+                    this.dataChange.next(data); // Inicializa el BehaviorSubject con los datos del árbol
                     this.dataChange.subscribe(data => this.dataSource.data = data); // Suscríbete a los cambios y actualiza la fuente de datos
                     this.resetTree();
-                    this.NodoSeleccionado.emit(data.content);
+                    this.NodoSeleccionado.emit(data);
                 },
                 error: (err) => { console.log("Error al cargar los Artículos") }
             })
@@ -167,13 +171,49 @@ export class TwNestedNodesComponent {
     }
 
 
-    agregarHijo(node: Node) {
+    agregarPadre() {
         // Añadir lógica para generar un nuevo nodo
         const nuevoHijo: Node = {
             name: this.form.controls['titulo'].value,
             content: this.content,
             state: this.form.controls['estado'].value,
             children: [],
+            referencia:this.form.controls['referencia'].value,
+            isVisible:false,
+            isExpanded:false
+        };
+        // actualizamos la fuente de datos para forzar un cambio de detección.
+        this.actualizarDatos();
+        // No modifiques directamente this.dataSource.data. En su lugar, emite un nuevo valor a través de dataChange
+        this.dataChange.next(this.dataSource.data);
+        this.classApplied = !this.classApplied;
+
+
+        //guardar base de datos
+        this.articuloService.createArticulo(nuevoHijo).subscribe({
+            next: (resp:any) => {
+                console.log(resp);
+                this.banderaPadre = false;
+                this.obtenerTodos();
+            },
+            error: err => {
+                console.log('Error al guardar');
+            }
+        });
+    }
+
+    agregarHijo(node: Node) {
+        console.log(node);
+        console.log(this.datoSeleccionadoGuardar);
+        // Añadir lógica para generar un nuevo nodo
+        const nuevoHijo: Node = {
+            name: this.form.controls['titulo'].value,
+            content: this.content,
+            state: this.form.controls['estado'].value,
+            children: [],
+            referencia:"",
+            isVisible:false,
+            isExpanded:false
         };
         if (!node.children) {
             node.children = [];
@@ -184,6 +224,31 @@ export class TwNestedNodesComponent {
         // No modifiques directamente this.dataSource.data. En su lugar, emite un nuevo valor a través de dataChange
         this.dataChange.next(this.dataSource.data);
         this.classApplied = !this.classApplied;
+
+
+        //guardar base de datos
+        if(this.datoSeleccionadoGuardar?.id_padre == null){
+            this.articuloService.createHijos(nuevoHijo,this.datoSeleccionadoGuardar?.id, this.datoSeleccionadoGuardar?.id).subscribe({
+                next: (resp:any) => {
+                    console.log(resp);
+                    this.obtenerTodos();
+                },
+                error: err => {
+                    console.log('Error al guardar');
+                }
+            });
+        }else{
+            this.articuloService.createHijos(nuevoHijo,this.datoSeleccionadoGuardar?.id_padre, this.datoSeleccionadoGuardar?.id).subscribe({
+                next: (resp:any) => {
+                    console.log(resp);
+                    this.obtenerTodos();
+                },
+                error: err => {
+                    console.log('Error al guardar');
+                }
+            });
+        }
+        
     }
 
     private actualizarDatos() {
@@ -203,7 +268,10 @@ export class TwNestedNodesComponent {
     abrirModalNuevo(node: Node) {
         this.classApplied = !this.classApplied;
         console.log(this.classApplied);
+        console.log(node);
         this.datoSeleccionado = node;
+        this.datoSeleccionadoGuardar = JSON.parse(JSON.stringify(node));
+        console.log(this.datoSeleccionadoGuardar);
     }
 
     toggleClass() {
@@ -211,7 +279,13 @@ export class TwNestedNodesComponent {
     }
 
     guardarNodo() {
-        this.agregarHijo(this.datoSeleccionado);
+        console.log(this.datoSeleccionado);
+        if(this.banderaPadre){
+            this.agregarPadre();
+        }else{
+            this.agregarHijo(this.datoSeleccionado);
+        }
+        
     }
 
     handleEditorContentChanged(content: string) {
@@ -237,5 +311,13 @@ export class TwNestedNodesComponent {
     
         return visibleNodes;
     }
+
+
+    crearArticulo(banderaPadre:boolean){
+        this.banderaPadre = banderaPadre;
+        this.toggleClass();
+    }
+
+
 
 }

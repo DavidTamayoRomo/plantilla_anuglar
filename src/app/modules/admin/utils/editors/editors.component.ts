@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgModule, Output, SimpleChanges } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { RouterLink } from '@angular/router';
 import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
@@ -6,7 +7,7 @@ import { NgxEditorModule, Editor, Toolbar } from 'ngx-editor';
 @Component({
     selector: 'app-editors',
     standalone: true,
-    imports: [RouterLink, MatCardModule, NgxEditorModule],
+    imports: [RouterLink, MatCardModule, NgxEditorModule, FormsModule],
     templateUrl: './editors.component.html',
     styleUrl: './editors.component.scss'
 })
@@ -26,6 +27,9 @@ export class EditorsComponent {
     ];
 
     @Output() contentChanged = new EventEmitter<string>();
+    @Input() message!: any;
+
+    currentValue: any;
 
     ngOnInit(): void {
         this.editor = new Editor();
@@ -33,6 +37,12 @@ export class EditorsComponent {
         this.editor.valueChanges.subscribe((value: any) => {
             this.contentChanged.emit(value);
         });
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['message']) {
+            this.currentValue = this.message;
+        }
     }
 
     // make sure to destory the editor

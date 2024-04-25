@@ -4,6 +4,18 @@ import { environment } from '../../../../environments/environment.development';
 
 const base_url = environment.url_api;
 
+interface Node {
+  id?: string;
+  name: string;
+  content?: string;
+  state?: string;
+  referencia?: string;
+  children?: Node[];
+  isVisible?: boolean;
+  isExpanded?: boolean;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +28,14 @@ export class ArticuloService {
 
   getArticulos() {
     return this.http.get(`${base_url}/articulos`);
+  }
+
+  createArticulo(articulo:Node){
+    return this.http.post(`${base_url}/articulos`, articulo);
+  }
+
+  createHijos(articulo:Node,id_padre:string, id_hijo:string ){
+    return this.http.post(`${base_url}/articulos/addHijo/${id_padre}/${id_hijo}`, articulo);
   }
 
 }

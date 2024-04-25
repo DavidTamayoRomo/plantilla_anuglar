@@ -33,6 +33,9 @@ import { Document, Packer, Paragraph, TextRun } from "docx";
 import { HasRoleDirective } from '../../../directives/has-role.directive';
 import { KeycloakAuthService } from '../../../auth/services/keycloak-auth.service';
 import { TextFromObjectPipe } from "../../../text-from-object.pipe";
+import { Validators } from 'ngx-editor';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+import { HttpClientModule } from '@angular/common/http';
 
 export interface PeriodicElement {
   taskName: string;
@@ -226,16 +229,16 @@ interface CategoriaNode {
 }
 
 @Component({
-    selector: 'app-lista-articulos',
-    standalone: true,
-    templateUrl: './lista-articulos.component.html',
-    styleUrl: './lista-articulos.component.scss',
-    imports: [
-        MatCardModule, MatMenuModule, MatButtonModule, RouterLink, MatTableModule, NgIf, MatCheckboxModule,
-        MatTooltipModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatPaginatorModule,
-        RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule, HasRoleDirective, RouterModule,
-        TextFromObjectPipe
-    ]
+  selector: 'app-lista-articulos',
+  standalone: true,
+  templateUrl: './lista-articulos.component.html',
+  styleUrl: './lista-articulos.component.scss',
+  imports: [
+    MatCardModule, MatMenuModule, MatButtonModule, RouterLink, MatTableModule, NgIf, MatCheckboxModule,
+    MatTooltipModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatPaginatorModule,
+    RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule, HasRoleDirective, RouterModule,
+    TextFromObjectPipe,AngularEditorModule,HttpClientModule
+  ]
 })
 export class ListaArticulosComponent {
 
@@ -267,7 +270,22 @@ export class ListaArticulosComponent {
   toggleClass() {
     this.classApplied = !this.classApplied;
   }
+  toggleClass1() {
+    this.classApplied1 = !this.classApplied1;
+  }
 
+  abrirEditar(element: Node) {
+    this.contenidoSeleccionado = element;
+    console.log(this.contenidoSeleccionado);
+    this.toggleClass1();
+    this.form.patchValue({
+      titulo: element.name,
+      contenido: element.content,
+      estado: element.state,
+      referencia: element.referencia,
+    });
+    this.parentMessage=element.content;
+  }
 
 
 
@@ -277,7 +295,12 @@ export class ListaArticulosComponent {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  parentMessage:any;
+  form!: FormGroup;
 
+  content: any;
+
+  classApplied1: boolean = false;
 
   constructor(
     public themeService: CustomizerSettingsService,
@@ -328,6 +351,14 @@ export class ListaArticulosComponent {
       nombre: '',
       padre: '',
     });
+
+    this.form = this.fb.group({
+      titulo: [null, [Validators.required]],
+      contenido: [null, [Validators.required]],
+      estado: [null, [Validators.required]],
+      referencia: [null],
+    });
+
   }
 
   ngAfterViewInit() {
@@ -448,7 +479,7 @@ export class ListaArticulosComponent {
   }
 
   exportToPDF() {
-    let jsonData = 
+    let jsonData =
     {
       "name": "segmento",
       "content": {
@@ -1660,5 +1691,18 @@ export class ListaArticulosComponent {
     return completeList; // Devuelve la lista completa con todos los nodos
   }
 
-  
+  abrirLink(url: string) {
+    window.open('https://' + url);
+  }
+
+
+  handleEditorContentChanged(content: string) {
+    this.content = content;
+  }
+
+  editar() {
+
+  }
+
+
 }

@@ -5,6 +5,10 @@
             <h5 class="mt-0 mb-0">
                 Articulos
             </h5>
+            <button mat-button class="text-daxa p-0 h-auto" (click)="crearArticulo(true)">
+                + Agregar Articulo
+            </button>
+
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
@@ -65,9 +69,9 @@
                     </h5>
                 </mat-card-title>
                 <mat-card-subtitle>
-                    <!-- <button mat-button (click)="toggleClass()">
+                    <button mat-button (click)="toggleClass()">
                         <i class="ri-close-fill"></i>
-                    </button> -->
+                    </button> 
                 </mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
@@ -86,6 +90,17 @@
                         </div>
                         <div class="col-md-12">
                             <app-editors (contentChanged)="handleEditorContentChanged($event)"></app-editors>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="main-label d-block lh-1 text-black">
+                                Referencia
+                            </label>
+                            <mat-form-field>
+                                <mat-label>
+                                    Referencia
+                                </mat-label>
+                                <input formControlName="referencia" matInput placeholder="Ejm: www.sercop.com/articulo1">
+                            </mat-form-field>
                         </div>
                         <div class="col-md-6">
                             <label class="main-label d-block lh-1 text-black">
