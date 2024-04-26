@@ -37,5 +37,9 @@ export class ArticuloService {
   createHijos(articulo:Node,id_padre:string, id_hijo:string ){
     return this.http.post(`${base_url}/articulos/addHijo/${id_padre}/${id_hijo}`, articulo);
   }
+  
+  update(articulo:Node,id_padre:any, id_hijo:any ){
+    return this.http.post(`${base_url}/articulos/update/${id_padre}/${id_hijo}`, articulo);
+  }
 
 }

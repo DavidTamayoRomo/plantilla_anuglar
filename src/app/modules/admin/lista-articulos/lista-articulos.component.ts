@@ -214,6 +214,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 
 interface Node {
   id?: string;
+  id_padre?: string | undefined;
   name: string;
   content?: string;
   state?: string;
@@ -237,7 +238,7 @@ interface CategoriaNode {
     MatCardModule, MatMenuModule, MatButtonModule, RouterLink, MatTableModule, NgIf, MatCheckboxModule,
     MatTooltipModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatPaginatorModule,
     RouterLinkActive, MatProgressBarModule, EditorsComponent, MatDialogModule, TwNestedNodesComponent, ReactiveFormsModule, MatTreeModule, HasRoleDirective, RouterModule,
-    TextFromObjectPipe,AngularEditorModule,HttpClientModule
+    TextFromObjectPipe
   ]
 })
 export class ListaArticulosComponent {
@@ -1701,8 +1702,44 @@ export class ListaArticulosComponent {
   }
 
   editar() {
+    /* console.log(this.contenidoSeleccionado);
+    console.log(this.form.value);
+    console.log(this.content);
+ */
+    let objeto:Node = {
+      name:this.form.value.titulo,
+      content:this.content,
+      state:this.form.value.estado,
+      referencia:this.form.value.referencia,
+      children:this.contenidoSeleccionado.children,
+      id:this.contenidoSeleccionado.id,
+      id_padre:this.contenidoSeleccionado.id_padre
+    }
 
-  }
+    /* if (this.form.valid && this.content) { */
+      //actualizar
+      if (this.contenidoSeleccionado.id_padre != null) {
+        this.articuloService.update(objeto, this.contenidoSeleccionado.id_padre,  this.contenidoSeleccionado.id).subscribe({
+          next: ((resp:any)=>{
+            console.log(resp);
+          }),
+          error:((err:any)=>{
+            console.log(err);
+          })
+        })
+      }else{
+        this.articuloService.update(objeto, this.contenidoSeleccionado.id,  this.contenidoSeleccionado.id).subscribe({
+          next: ((resp:any)=>{
+            console.log(resp);
+          }),
+          error:((err:any)=>{
+            console.log(err);
+          })
+        })
+      }
+      
+    }
+ /*  } */
 
 
 }

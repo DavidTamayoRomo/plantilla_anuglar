@@ -164,7 +164,7 @@
         .popup-dialog {
             display: flex;
             transition: .3s;
-            max-width: 550px;
+            max-width: 900px;
             align-items: center;
             transform: translate(0, -20px);
             min-height: calc(100% - 1.75rem * 2);
@@ -368,7 +368,7 @@
     ::ng-deep {
         .add-new-task-popup {
             .popup-dialog {
-                max-width: 400px;
+                max-width: 900px;
 
                 .daxa-card {
                     .mat-mdc-card-header {
@@ -940,4 +940,20 @@
             }
         }
     }
+}
+
+
+.column-contenido {
+    max-width: 80px; // Define un ancho máximo para la columna "contenido"
+    width: 80px; // Define un ancho específico para la columna "contenido"
+    text-align: left; // Puedes ajustar la alineación del texto si es necesario
+}
+
+.column-60 {
+    width: 60px; // Ancho específico
+    max-width: 60px; // Limita el ancho
+    white-space: normal; // Permite que el texto salte a nuevas líneas
+    overflow-wrap: break-word; // Ajusta el texto para evitar desbordamientos
+    text-overflow: ellipsis; // Muestra puntos suspensivos si el texto excede el espacio
+    word-break: break-word; // Divide el texto para evitar desbordamientos
 }

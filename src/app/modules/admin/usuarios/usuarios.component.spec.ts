@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditorHtmlComponent } from './editor-html.component';
+import { UsuariosComponent } from './usuarios.component';
 
-describe('EditorHtmlComponent', () => {
-  let component: EditorHtmlComponent;
-  let fixture: ComponentFixture<EditorHtmlComponent>;
+describe('UsuariosComponent', () => {
+  let component: UsuariosComponent;
+  let fixture: ComponentFixture<UsuariosComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditorHtmlComponent]
+      imports: [UsuariosComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(EditorHtmlComponent);
+    fixture = TestBed.createComponent(UsuariosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
