@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,6 +12,12 @@ import { Validators } from 'ngx-editor';
 import { CustomizerSettingsService } from '../../../common/customizer-settings/customizer-settings.service';
 import { UsuariosService } from '../services/usuarios.service';
 import { MatSelectModule } from '@angular/material/select';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakBackService } from '../services/keycloak-back.service';
+import { environment } from '../../../../environments/environment.development';
+import { CommonModule } from '@angular/common';
+
+const clienteId = environment.keycloakConfig.clientId;
 
 @Component({
   selector: 'app-usuarios',
@@ -24,7 +30,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatPaginator,
     MatIconModule,
     MatTableModule,
-    MatSelectModule
+    MatSelectModule,
+    CommonModule
   ],
   templateUrl: './usuarios.component.html',
   styleUrl: './usuarios.component.scss'
@@ -47,18 +54,35 @@ export class UsuariosComponent {
   clickedRows = new Set<any>();
 
   usuarioSeleccionado:any;
+  rolesUsuario:any;
+
+  // Select Emails
+  roles = new FormControl('');
+  rolList: any[] = [];
+  visualizarRol:boolean=false;
 
   constructor(
     public themeService: CustomizerSettingsService,
     private _formBuilder: FormBuilder,
-    private usuariosService:UsuariosService
-
+    private usuariosService:UsuariosService,
+    private keycloakBackService:KeycloakBackService
   ) {
 
   }
 
-  onInit() {
+  ngOnInit() {
+    
+    
     this.dataSource.data = [];
+    this.usuariosService.getRoles().subscribe({
+      next:(resp:any)=>{
+        this.rolList = resp;
+
+      },
+      error:(err:any)=>{
+
+      }
+    })
   }
 
   ngAfterViewInit() {
@@ -74,6 +98,7 @@ export class UsuariosComponent {
         next:((resp:any)=>{
           console.log(resp);
           this.dataSource.data= resp;
+
         }),
         error:((err:any)=>{
           console.warn(err);
@@ -109,8 +134,51 @@ export class UsuariosComponent {
     console.log(element);
     this.stepper.selectedIndex = 1;
     this.usuarioSeleccionado=element;
+    this.keycloakBackService.getClient(clienteId).subscribe({
+      next:(resp:any)=>{
+        this.keycloakBackService.getRolUserClient(resp.id, element.id).subscribe({
+          next:(resp:any)=>{
+            this.rolesUsuario=resp;
+            if (resp.length>0) {
+              this.visualizarRol = false
+            }else{
+              this.visualizarRol = true
+            }
+          },
+          error:(err:any)=>{
+
+          }
+        })
+      },
+      error:(err:any)=>{
+
+      }
+    })
   }
 
+  guardarRol(){
+    console.log(this.roles.value);
+    this.usuariosService.guardarRol([this.roles.value], this.usuarioSeleccionado.id).subscribe({
+      next:(resp:any)=>{
+        console.log(resp);
+      },
+      error:(err:any)=>{
+
+      }
+    })
+  }
+
+  eliminarRol(){
+    this.keycloakBackService.quitarRol(this.usuarioSeleccionado.id,this.rolesUsuario ).subscribe({
+      next:(resp:any)=>{
+        console.log(resp);
+      },
+      error:(err:any)=>{
+        
+      }
+    })
+    
+  }
 
 
 

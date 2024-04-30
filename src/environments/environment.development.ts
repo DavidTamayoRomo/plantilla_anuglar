@@ -3,7 +3,7 @@ import { KeycloakConfig } from "keycloak-js";
 const keycloakConfig: KeycloakConfig = {
     url: 'https://sso-poc.quito.gob.ec:8443/auth/',
     realm: 'Municipales',
-    clientId: 'app-gbi',
+    clientId: 'app-codigo-municipal',
 };
 
 export const environment = {

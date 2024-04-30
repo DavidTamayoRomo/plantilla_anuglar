@@ -105,19 +105,23 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="row">
-                                        <div class="col-12">
+                                        <div class="col-12" *ngIf="visualizarRol">
                                             <mat-form-field style="padding-top: 5px; padding-bottom: 5px">
                                                 <mat-label>Asignar Rol</mat-label>
-                                                <mat-select>
-                                                    <mat-option value="Administrador">Administrador</mat-option>
+                                                <mat-select [formControl]="roles">
+                                                    @for (rol of rolList; track rol) {
+                                                        <mat-option [value]="rol">
+                                                            {{rol.name}}
+                                                        </mat-option>
+                                                    }
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-md-2">
 
                                         </div>
-                                        <div class="col-md-8">
-                                            <button mat-raised-button style="float: center" style="padding-top: 5px">
+                                        <div class="col-md-8" *ngIf="!visualizarRol">
+                                            <button mat-raised-button style="float: center" style="padding-top: 5px" (click)="eliminarRol()">
                                                 <i style="padding-top: 5px" class="material-symbols-outlined">
                                                     delete
                                                 </i>
@@ -138,7 +142,7 @@
                             <button mat-button style="float: left; color: gray">
                                 Regresar
                             </button>
-                            <button mat-raised-button  style="float: right">
+                            <button mat-raised-button  style="float: right" (click)="guardarRol()">
                                 Guardar
                             </button>
                         </div>

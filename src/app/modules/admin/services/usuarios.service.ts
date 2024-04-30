@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 
 const base_url = environment.url_api;
+const clienteId = environment.keycloakConfig.clientId;
 
 
 @Injectable({
@@ -20,5 +21,14 @@ export class UsuariosService {
   }
 
 
+  getRoles() {
+    return this.http.get(`${base_url}/wso2/get-roles/${clienteId}`);
+  }
+
+  guardarRol(roles:any, ssoId:string){
+    return this.http.post(`${base_url}/wso2/agregar-roles/${clienteId}/${ssoId}`, roles);
+  }
+
+  
 
 }
